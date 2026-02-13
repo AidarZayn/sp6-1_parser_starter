@@ -1,12 +1,22 @@
 // @todo: напишите здесь код парсера
 const metaTitle = document.documentElement.lang;
 
+function getKeywords () {
+    const myKeywords = [];
+    document.querySelector('meta[name="keywords"]').content.split(',').forEach(item => {
+        myKeywords.push(item.trim())
+    })
+    return myKeywords;
+}
+
+getKeywords()
+
 function getMetaData () {
     return {
         language: document.documentElement.lang,
         title: document.head.querySelector('title').textContent.split(' — ')[0],
         description: document.querySelector('meta[name="description"]').content,
-        keywords: document.querySelector('meta[name="keywords"]').content.split(','),
+        keywords: getKeywords(),
         opengraph: {
             title: document.querySelector('meta[property="og:title"]').content.split(' — ')[0],
             image: document.querySelector('meta[property="og:image"]').content,
@@ -43,7 +53,7 @@ function getDescription () {
         item.classList.remove('unused');
         item.removeAttribute('class');
     })
-    return myDescription.innerHTML;
+    return myDescription.innerHTML.trim();
 }
 
 function getImages () {
@@ -80,8 +90,8 @@ function getProducts () {
                 document.querySelector('.blue').textContent
             ]
         },
-        price,
-        oldPrice,
+        price: Number(price),
+        oldPrice: Number(oldPrice),
         discount: oldPrice - price,
         discountPercent,
         currency: determineCurrency(document.querySelector('.price').textContent.trim().charAt(0)),
@@ -119,7 +129,7 @@ function getReviews() {
             },
             title: item.querySelector('.title').textContent,
             description: item.querySelector('div p').textContent,
-            date: item.querySelector('.author i').textContent
+            date: item.querySelector('.author i').textContent.replaceAll('/', '.')
         })
     })
 
